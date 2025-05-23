@@ -135,9 +135,10 @@ async function run() {
 
 
 
-       app.patch("/api/roommates/:id/like", async (req, res) => {
+    app.patch("/api/roommates/:id/like", async (req, res) => {
     const { id } = req.params;
     const { email } = req.body;
+
 
     if (!email) {
         return res.status(400).send({ message: "Email is required" });
