@@ -139,7 +139,6 @@ async function run() {
             const { id } = req.params;
             const { email } = req.body;
 
-
             if (!email) {
                 return res.status(400).send({ message: "Email is required" });
             }
@@ -150,25 +149,27 @@ async function run() {
                 return res.status(404).send({ message: "Post not found" });
             }
 
-
             if (post.email === email) {
                 return res.status(403).send({ message: "You can't like your own post" });
             }
 
-            if (post.likedUsers?.includes(email)) {
-                return res.status(409).send({ message: "Already Stored" });
-            }
+            const update = {
+                $inc: { likeCount: 1 }
+            };
 
+           
+            if (!post.likedUsers?.includes(email)) {
+                update.$addToSet = { likedUsers: email };
+            }
 
             const result = await roommateCollection.updateOne(
                 { _id: new ObjectId(id) },
-                { $inc: { likeCount: 1 },
-                 $addToSet: { likedUsers: email },
-             }
+                update
             );
 
             res.send({ message: "Liked successfully", result });
         });
+
 
 
 
