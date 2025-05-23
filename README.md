@@ -1,6 +1,6 @@
 # API Endpoints Documentation
 
-Base URL: `http://localhost:3000/api/`
+Base URL: `https://server-10-nu.vercel.app/api/`
 
 
 
@@ -9,7 +9,7 @@ Base URL: `http://localhost:3000/api/`
 #### 1. Get Limited Roommates
 
 ```http
-GET http://localhost:3000/api/roommates?limit=6
+GET https://server-10-nu.vercel.app/api/roommates?limit=6
 ```
 
 ### API Usage Example
@@ -17,7 +17,7 @@ GET http://localhost:3000/api/roommates?limit=6
 #### 1. Get Id And email
 
 ```http
-GET GET http://localhost:3000/api/roommates/64b123456789abcdef123456?email=user@example.com
+GET GET https://server-10-nu.vercel.app/api/roommates/64b123456789abcdef123456?email=user@example.com
 
 ```
 
@@ -25,7 +25,7 @@ GET GET http://localhost:3000/api/roommates/64b123456789abcdef123456?email=user@
 
 #### 1. Add New Roommate Post
 
-```POST http://localhost:3000/api/roommates
+```POST https://server-10-nu.vercel.app/api/roommates
 
 ```
 

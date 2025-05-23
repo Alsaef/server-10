@@ -39,7 +39,7 @@ async function run() {
             const data = req.body;
             data.likeCount = 0;
             data.likedUsers = [];
-            data.createdAt=new Date()
+            data.createdAt = new Date()
             const result = await roommateCollection.insertOne(data);
             res.send({ message: "Roommate post created", result });
         });
@@ -49,7 +49,7 @@ async function run() {
         // Get roommates with optional limit and filter by available
         app.get("/api/roommates", async (req, res) => {
             let limit = parseInt(req.query.limit) || 0;
-           const availability = req.query.availability;
+            const availability = req.query.availability;
 
 
             const filter = {};
@@ -59,16 +59,16 @@ async function run() {
                 filter.availability = "Not Available";
             }
 
-            const roommates = await roommateCollection.find(filter).sort({createdAt: -1}).limit(limit).toArray();
-           
+            const roommates = await roommateCollection.find(filter).sort({ createdAt: -1 }).limit(limit).toArray();
+
             res.send(roommates);
         });
 
 
 
         app.get("/api/all-roommates", async (req, res) => {
-            const result = await roommateCollection.find({}).sort({createdAt: -1}).toArray();
-            res.send(result);
+            const result = await roommateCollection.find({}).sort({ createdAt: -1 }).toArray()
+            res.send(result)
         });
 
 
@@ -145,6 +145,15 @@ async function run() {
 
             const post = await roommateCollection.findOne({ _id: new ObjectId(id) });
 
+            if (!post) {
+                return res.status(404).send({ message: "Post not found" });
+            }
+
+
+            if (post.email === email) {
+                return res.status(403).send({ message: "You cannot like your own post" });
+            }
+
             if (post.likedUsers?.includes(email)) {
                 return res.status(409).send({ message: "Already liked" });
             }
@@ -159,6 +168,7 @@ async function run() {
 
             res.send({ message: "Liked successfully", result });
         });
+
 
 
 
