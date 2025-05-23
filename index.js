@@ -155,6 +155,10 @@ async function run() {
                 return res.status(403).send({ message: "You can't like your own post" });
             }
 
+            if (post.likedUsers?.includes(email)) {
+                return res.status(409).send({ message: "Already Stored" });
+            }
+
 
             const result = await roommateCollection.updateOne(
                 { _id: new ObjectId(id) },
