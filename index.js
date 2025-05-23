@@ -135,34 +135,36 @@ async function run() {
 
 
 
-    app.patch("/api/roommates/:id/like", async (req, res) => {
-    const { id } = req.params;
-    const { email } = req.body;
+        app.patch("/api/roommates/:id/like", async (req, res) => {
+            const { id } = req.params;
+            const { email } = req.body;
 
 
-    if (!email) {
-        return res.status(400).send({ message: "Email is required" });
-    }
+            if (!email) {
+                return res.status(400).send({ message: "Email is required" });
+            }
 
-    const post = await roommateCollection.findOne({ _id: new ObjectId(id) });
+            const post = await roommateCollection.findOne({ _id: new ObjectId(id) });
 
-    if (!post) {
-        return res.status(404).send({ message: "Post not found" });
-    }
+            if (!post) {
+                return res.status(404).send({ message: "Post not found" });
+            }
 
-   
-    if (post.email === email) {
-        return res.status(403).send({ message: "You can't like your own post" });
-    }
 
-    
-    const result = await roommateCollection.updateOne(
-        { _id: new ObjectId(id) },
-        { $inc: { likeCount: 1 } }
-    );
+            if (post.email === email) {
+                return res.status(403).send({ message: "You can't like your own post" });
+            }
 
-    res.send({ message: "Liked successfully", result });
-});
+
+            const result = await roommateCollection.updateOne(
+                { _id: new ObjectId(id) },
+                { $inc: { likeCount: 1 },
+                 $addToSet: { likedUsers: email },
+             }
+            );
+
+            res.send({ message: "Liked successfully", result });
+        });
 
 
 
