@@ -44,7 +44,32 @@ async function run() {
             res.send({ message: "Roommate post created", result });
         });
 
+       app.get("/api/roommates/stats", async (req, res) => {
+            try {
+                const email = req.query.email;
 
+                if (!email) {
+                    return res.status(400).send({ error: "Email is required" });
+                }
+
+                const total = await roommateCollection.countDocuments();
+                const mine = await roommateCollection.countDocuments({ email });
+                const available = await roommateCollection.countDocuments({ availability: "Available" });
+                const unavailable = await roommateCollection.countDocuments({ availability: "Not Available" });
+
+                res.send({ total, mine, available, unavailable });
+            } catch (error) {
+                console.error("Error in /api/roommates/stats:", error);
+                res.status(500).send({ message: "Server Error", error: error.message });
+            }
+        });
+
+        //    top roomate
+
+        app.get('/api/top-roommates', async (req, res) => {
+            const result = await roommateCollection.find().sort({ likeCount: -1 }).limit(6).toArray()
+            res.status(200).send(result)
+        })
 
         // Get roommates with optional limit and filter by available
         app.get("/api/roommates", async (req, res) => {
@@ -157,7 +182,7 @@ async function run() {
                 $inc: { likeCount: 1 }
             };
 
-           
+
             if (!post.likedUsers?.includes(email)) {
                 update.$addToSet = { likedUsers: email };
             }
@@ -192,6 +217,10 @@ async function run() {
             res.json(post);
 
         });
+
+
+
+ 
 
 
 
